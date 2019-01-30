@@ -1,3 +1,10 @@
+import Pkg
+if ~haskey(Pkg.installed(), "PowerModels")
+	Pkg.add("PowerModels");
+end
+if ~haskey(Pkg.installed(), "Ipopt")
+	Pkg.add("Ipopt");
+end
 using PowerModels, Ipopt
 using DelimitedFiles
 include("result_process_PowerModel.jl");
