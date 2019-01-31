@@ -45,31 +45,38 @@ function MyJulia1(conFile, inlFile, rawFile, ropFile, timeLimitSeconds, scoringM
 		return (bus_sec, gen_sec)
 	end
 
-	function write_bus_gen_sec(fhandle, bussec, gensec)
+	function write_bus_gen_sec(fhandle, basecase)
+	   bussec = basecase["bus_section"]
 	   write(fhandle, "--bus section\n");
 	   write(fhandle, "i, v(p.u.), theta(deg), bcs(MVAR at v = 1 p.u.)\n");
 	   writedlm(fhandle, bussec, ",");
+	   gensec = basecase["generator_section"]
+	   ngen, _ = size(gensec)
+	   for i = 1:ngen
+	      gensec[i, 2] = "'"*string(gensec[i, 2])*"'"
+	   end
 	   write(fhandle, "--generator section\n");
 	   write(fhandle, "i, id, p(MW), q(MVAR)\n");
 	   writedlm(fhandle, gensec, ",");
 	end
 
-	function write_sol1_file(bussec, gensec, filename)
+	function write_sol1_file(basecase, filename)
 		open(filename, "w") do f
-			write_bus_gen_sec(f, bussec, gensec);           
+			write_bus_gen_sec(f, basecase);           
 		end
 	end
 
-	function write_sol2_file(bussec_array, gensec_array, con_label_array, delta_array, filename)
+	#function write_sol2_file(bussec_array, gensec_array, con_label_array, delta_array, filename)
+	function write_sol2_file(contingency, filename)
 		open(filename, "w") do f
-			for i =1:length(bussec_array)
+			for i =1:length(contingency)
 				write(f, "--contingency\n");
 				write(f, "label\n");
-				write(f, "'"*con_label_array[i]*"'"*"\n");
-				write_bus_gen_sec(f, bussec_array[i], gensec_array[i]);
+				write(f, "'"*contingency[string(i)]["label"]*"'"*"\n");
+				write_bus_gen_sec(f, contingency[string(i)]);
 				write(f, "--delta section\n");
 				write(f, "delta(MW)\n");
-				write(f, string(delta_array[i]));
+				write(f, string(contingency[string(i)]["delta"]*"\n"));
 			end
 		end
 	end
