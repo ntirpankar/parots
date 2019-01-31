@@ -10,7 +10,7 @@ using DelimitedFiles
 include("result_process_PowerModel.jl");
 include("data_process.jl");
 
-function MyJulia1(conFile, inlFile, rawFile, ropFile, timeLimitSeconds, scoringMethod, networkModel)
+#function MyJulia1(conFile, inlFile, rawFile, ropFile, timeLimitSeconds, scoringMethod, networkModel)
 	solverI = IpoptSolver();
 
 	paths="Solution1.m";
@@ -91,4 +91,4 @@ function MyJulia1(conFile, inlFile, rawFile, ropFile, timeLimitSeconds, scoringM
 	con_label_array = ["LINE-6-12-BL"];
 	delta_array = [0];
 	write_sol2_file(bussec_array, gensec_array, con_label_array, delta_array, "Solution2.txt");	
-end
+#end
